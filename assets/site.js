@@ -185,6 +185,205 @@
         document.addEventListener('mouseenter', () => cursor.style.opacity = '1');
     }
 
+    // ---- ⌘K Command palette ----
+    (function setupCmdK() {
+        // Build the palette overlay (singleton)
+        if (document.querySelector('.cmdk')) return;
+        const isMac = navigator.platform.toLowerCase().includes('mac');
+        const modKey = isMac ? '⌘' : 'Ctrl';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'cmdk';
+        overlay.innerHTML = `
+            <div class="cmdk-panel" role="dialog" aria-label="Command palette">
+                <div class="cmdk-search">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="cmdkInput" placeholder="Search properties, pages, markets..." autocomplete="off" spellcheck="false">
+                    <span class="cmdk-kbd">esc</span>
+                </div>
+                <div class="cmdk-results" id="cmdkResults"></div>
+                <div class="cmdk-footer">
+                    <span><span class="cmdk-kbd">↑↓</span> navigate</span>
+                    <span><span class="cmdk-kbd">↵</span> open</span>
+                    <span>Summit · ${isMac ? '⌘K' : 'Ctrl+K'} anywhere</span>
+                </div>
+            </div>`;
+        document.body.appendChild(overlay);
+
+        const panel = overlay.querySelector('.cmdk-panel');
+        const input = overlay.querySelector('#cmdkInput');
+        const results = overlay.querySelector('#cmdkResults');
+
+        // Build the search index from window.SUMMIT_PROPERTIES + nav links
+        const props = window.SUMMIT_PROPERTIES || [];
+        const heroes = window.SUMMIT_HEROES || {};
+        const detailPages = window.SUMMIT_DETAIL_PAGES || {};
+        const stateNames = window.SUMMIT_STATE_NAMES || {};
+
+        // Detect path depth (in /property/ subdirectory pages, links need ../ prefix)
+        const inSub = window.location.pathname.includes('/property/');
+        const pre = inSub ? '../' : '';
+
+        const navItems = [
+            { type: 'page', icon: 'H', title: 'Home', href: pre + 'index.html', meta: '/' },
+            { type: 'page', icon: 'S', title: 'Services', href: pre + 'services.html', meta: 'services' },
+            { type: 'page', icon: 'P', title: 'Portfolio · all 107 properties', href: pre + 'properties.html', meta: 'portfolio' },
+            { type: 'page', icon: 'T', title: 'Team', href: pre + 'team.html', meta: 'team' },
+            { type: 'page', icon: 'C', title: 'Contact · start a conversation', href: pre + 'contact.html', meta: 'contact' },
+            { type: 'market', icon: 'WI', title: 'Wisconsin · 32 properties', href: pre + 'wisconsin.html', meta: 'market' },
+            { type: 'market', icon: 'MO', title: 'Missouri · 31 properties', href: pre + 'missouri.html', meta: 'market' },
+        ];
+
+        const propItems = props.map(p => {
+            const key = `${p.addr}|${p.city}|${p.state}`;
+            const slug = detailPages[key];
+            return {
+                type: 'property',
+                icon: p.state,
+                title: `${p.addr}`,
+                subtitle: `${p.city}, ${p.state}`,
+                href: slug
+                    ? pre + 'property/' + slug + '.html'
+                    : pre + 'properties.html?state=' + p.state + '&q=' + encodeURIComponent(p.addr.split(' ')[0]),
+                meta: slug ? 'detail' : 'list',
+                searchable: `${p.addr} ${p.city} ${p.state} ${stateNames[p.state] || ''}`.toLowerCase(),
+            };
+        });
+
+        let selectedIndex = 0;
+        let currentItems = [];
+
+        function fuzzyMatch(query, str) {
+            // simple subsequence match — just-good-enough fuzzy
+            query = query.toLowerCase().trim();
+            str = str.toLowerCase();
+            if (!query) return true;
+            let qi = 0;
+            for (let si = 0; si < str.length && qi < query.length; si++) {
+                if (str[si] === query[qi]) qi++;
+            }
+            return qi === query.length;
+        }
+        function scoreMatch(query, item) {
+            const q = query.toLowerCase().trim();
+            if (!q) return 0;
+            const text = (item.searchable || (item.title + ' ' + (item.meta || ''))).toLowerCase();
+            if (text.startsWith(q)) return 100;
+            if (text.includes(' ' + q)) return 80;
+            if (text.includes(q)) return 60;
+            return 20;
+        }
+
+        function render() {
+            const q = input.value.trim();
+            results.innerHTML = '';
+
+            // Filter
+            let nav = navItems.filter(i => fuzzyMatch(q, i.title + ' ' + (i.meta || '')));
+            let pp  = propItems.filter(i => fuzzyMatch(q, i.searchable));
+            if (q) {
+                nav.sort((a, b) => scoreMatch(q, b) - scoreMatch(q, a));
+                pp.sort((a, b) => scoreMatch(q, b) - scoreMatch(q, a));
+            }
+            // Cap properties
+            pp = pp.slice(0, 12);
+
+            currentItems = [];
+            function appendGroup(label, items) {
+                if (!items.length) return;
+                const g = document.createElement('div');
+                g.className = 'cmdk-group';
+                g.textContent = label;
+                results.appendChild(g);
+                items.forEach(item => {
+                    const a = document.createElement('a');
+                    a.className = 'cmdk-item';
+                    a.href = item.href;
+                    a.innerHTML = `
+                        <div class="icon">${item.icon}</div>
+                        <div>
+                            <div class="title">${item.title}</div>
+                            ${item.subtitle ? `<div style="font-size:12px;color:var(--summit-slate);">${item.subtitle}</div>` : ''}
+                        </div>
+                        <div class="meta">${item.meta || ''}</div>`;
+                    results.appendChild(a);
+                    currentItems.push(a);
+                });
+            }
+            appendGroup('Pages & Markets', nav);
+            appendGroup(`Properties${pp.length === 12 ? ' · top 12' : ''}`, pp);
+
+            if (!currentItems.length) {
+                const empty = document.createElement('div');
+                empty.className = 'cmdk-empty';
+                empty.textContent = q ? `No results for "${q}"` : 'Start typing to search...';
+                results.appendChild(empty);
+            } else {
+                selectedIndex = 0;
+                updateSelection();
+            }
+        }
+        function updateSelection() {
+            currentItems.forEach((el, i) => el.classList.toggle('selected', i === selectedIndex));
+            const sel = currentItems[selectedIndex];
+            if (sel) sel.scrollIntoView({ block: 'nearest' });
+        }
+        function open() {
+            overlay.classList.add('open');
+            input.value = '';
+            render();
+            setTimeout(() => input.focus(), 30);
+        }
+        function close() {
+            overlay.classList.remove('open');
+        }
+
+        input.addEventListener('input', render);
+        input.addEventListener('keydown', e => {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(currentItems.length - 1, selectedIndex + 1);
+                updateSelection();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(0, selectedIndex - 1);
+                updateSelection();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const sel = currentItems[selectedIndex];
+                if (sel) window.location.href = sel.href;
+            } else if (e.key === 'Escape') {
+                close();
+            }
+        });
+        overlay.addEventListener('click', e => {
+            if (e.target === overlay) close();
+        });
+
+        // Trigger keys (⌘K / Ctrl+K) and / to focus
+        document.addEventListener('keydown', e => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                if (overlay.classList.contains('open')) close();
+                else open();
+            } else if (e.key === '/' && !overlay.classList.contains('open')) {
+                const tag = (document.activeElement && document.activeElement.tagName) || '';
+                if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) {
+                    e.preventDefault();
+                    open();
+                }
+            }
+        });
+
+        // Wire any .cmdk-trigger buttons in the nav
+        document.querySelectorAll('.cmdk-trigger').forEach(btn => {
+            btn.addEventListener('click', open);
+        });
+
+        // Expose for debugging
+        window.SummitCmdK = { open, close };
+    })();
+
     // ---- Smooth scroll for in-page anchors (already covered by html scroll-behavior, but add focus) ----
     document.querySelectorAll('a[href^="#"]').forEach(a => {
         a.addEventListener('click', (e) => {
