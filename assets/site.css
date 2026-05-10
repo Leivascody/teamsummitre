@@ -443,18 +443,49 @@ a:hover { color: var(--summit-navy); }
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.team-card:hover {
+    border-color: var(--summit-navy-300);
+    box-shadow: var(--summit-shadow-md);
+    transform: translateY(-2px);
 }
 .team-card .photo {
+    position: relative;
     background: linear-gradient(135deg, var(--summit-navy-700), var(--summit-navy));
     aspect-ratio: 4 / 3;
+    overflow: hidden;
+}
+.team-card .photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+/* Branded placeholder when no real photo: Summit logomark centered in gradient */
+.team-card .photo.placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--summit-white);
-    font-family: var(--summit-font-display);
-    font-size: 56px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
+}
+.team-card .photo.placeholder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 60%, rgba(156,123,79,0.15), transparent 60%);
+}
+.team-card .photo.placeholder::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("summit-logo-mark-white.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 90px auto;
+    opacity: 0.5;
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.2));
 }
 .team-card .body { padding: var(--summit-space-6) var(--summit-space-6) var(--summit-space-8); }
 .team-card .role {
