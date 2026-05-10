@@ -1408,6 +1408,218 @@ a:hover { color: var(--summit-navy); }
     margin-top: var(--summit-space-8);
 }
 
+/* =============================================================================
+   POLISH PASS — premium micro-animations + dynamic hero
+   ============================================================================= */
+
+/* Scroll progress bar — thin bronze line at top of viewport */
+.scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0;
+    background: linear-gradient(to right, var(--summit-bronze), var(--summit-ember));
+    z-index: 200;
+    transition: width 0.05s linear;
+    pointer-events: none;
+}
+
+/* Ken Burns slow zoom on static hero photo backgrounds */
+@keyframes ken-burns {
+    0%   { transform: scale(1.05) translate(0, 0); }
+    50%  { transform: scale(1.12) translate(-1.5%, -1%); }
+    100% { transform: scale(1.05) translate(0, 0); }
+}
+.hero .hero-bg img,
+.page-header .hero-bg img {
+    animation: ken-burns 24s ease-in-out infinite;
+    transform-origin: center;
+}
+/* Don't animate when video is playing (it has its own motion) */
+.hero .hero-bg video ~ img,
+.hero .hero-bg video {
+    animation: none;
+}
+
+/* Eyebrow underline draws on scroll-into-view */
+.summit-eyebrow {
+    position: relative;
+    padding-bottom: 4px;
+}
+.summit-eyebrow::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    width: 0;
+    background: var(--summit-bronze);
+    transition: width 0.8s cubic-bezier(.16, 1, .3, 1) 0.1s;
+}
+.summit-eyebrow.in-view::after,
+.fade-up.in-view .summit-eyebrow::after,
+.in-view .summit-eyebrow::after {
+    width: 32px;
+}
+
+/* Property card hover overlay with "View Property →" CTA */
+.prop {
+    position: relative;
+}
+.prop .photo {
+    position: relative;
+}
+.prop .photo .hover-cta {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15,24,39,0.85) 0%, rgba(15,24,39,0.2) 50%, transparent 80%);
+    color: var(--summit-white);
+    display: flex;
+    align-items: flex-end;
+    padding: var(--summit-space-4) var(--summit-space-5);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    font-family: var(--summit-font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+.prop .photo .hover-cta::after {
+    content: " →";
+    margin-left: 6px;
+    transition: transform 0.25s ease;
+    display: inline-block;
+}
+a.prop:hover .photo .hover-cta {
+    opacity: 1;
+}
+a.prop:hover .photo .hover-cta::after {
+    transform: translateX(4px);
+}
+
+/* Stagger reveal for grid items */
+.grid-2 > *, .grid-3 > *, .grid-4 > *, .props-grid > *, .featured-strip > * {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.grid-2.in-view > *, .grid-3.in-view > *, .grid-4.in-view > *, .props-grid.in-view > *, .featured-strip.in-view > * {
+    opacity: 1;
+    transform: translateY(0);
+}
+.grid-2.in-view > *:nth-child(2)  { transition-delay: 0.06s; }
+.grid-2.in-view > *:nth-child(3)  { transition-delay: 0.12s; }
+.grid-2.in-view > *:nth-child(4)  { transition-delay: 0.18s; }
+.grid-3.in-view > *:nth-child(2)  { transition-delay: 0.06s; }
+.grid-3.in-view > *:nth-child(3)  { transition-delay: 0.12s; }
+.grid-4.in-view > *:nth-child(2)  { transition-delay: 0.04s; }
+.grid-4.in-view > *:nth-child(3)  { transition-delay: 0.08s; }
+.grid-4.in-view > *:nth-child(4)  { transition-delay: 0.12s; }
+.featured-strip.in-view > *:nth-child(2) { transition-delay: 0.05s; }
+.featured-strip.in-view > *:nth-child(3) { transition-delay: 0.10s; }
+.featured-strip.in-view > *:nth-child(4) { transition-delay: 0.15s; }
+.featured-strip.in-view > *:nth-child(5) { transition-delay: 0.20s; }
+.featured-strip.in-view > *:nth-child(6) { transition-delay: 0.25s; }
+
+/* US tile map pulse on active states */
+@keyframes summit-tile-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(156,123,79,0); }
+    50%      { box-shadow: 0 0 0 4px rgba(156,123,79,0.18); }
+}
+.us-tile-map .state.active {
+    animation: summit-tile-pulse 4s ease-in-out infinite;
+}
+.us-tile-map .state.active:nth-child(3n)  { animation-delay: 0.5s; }
+.us-tile-map .state.active:nth-child(3n+1) { animation-delay: 1s; }
+.us-tile-map .state.active:nth-child(3n+2) { animation-delay: 1.5s; }
+
+/* Marquee city ticker */
+.marquee {
+    overflow: hidden;
+    background: var(--summit-navy);
+    color: var(--summit-white);
+    padding: var(--summit-space-5) 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.marquee-track {
+    display: flex;
+    gap: var(--summit-space-8);
+    animation: marquee-scroll 60s linear infinite;
+    width: max-content;
+    will-change: transform;
+}
+.marquee:hover .marquee-track {
+    animation-play-state: paused;
+}
+.marquee span {
+    font-family: var(--summit-font-display);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--summit-white);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--summit-space-8);
+}
+.marquee span::after {
+    content: "·";
+    color: var(--summit-bronze);
+    font-size: 18px;
+    margin-left: var(--summit-space-8);
+}
+@keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+/* Magnetic primary buttons in hero — micro-interaction on cursor proximity */
+.hero .summit-btn-primary,
+.cta-banner .summit-btn-primary,
+.detail-cta-row .summit-btn-primary {
+    transition: transform 0.15s cubic-bezier(.16, 1, .3, 1), background 0.15s, color 0.15s;
+}
+
+/* Subtle bronze accent line under any h2 in section-head, draws on in-view */
+.section-head {
+    position: relative;
+}
+.section-head::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background: var(--summit-bronze);
+    transition: width 1s cubic-bezier(.16, 1, .3, 1) 0.2s;
+}
+.section-head.in-view::before,
+.fade-up.in-view .section-head::before,
+.in-view .section-head::before {
+    width: 48px;
+}
+
+/* Detail-page hero gets Ken Burns too */
+.detail-hero img {
+    animation: ken-burns 30s ease-in-out infinite;
+}
+
+/* Improved video page-header — autoplay video underneath text overlay */
+.page-header .hero-bg video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.32;
+    z-index: 0;
+}
+
 /* Utility */
 .text-center { text-align: center; }
 .mt-8 { margin-top: var(--summit-space-8); }

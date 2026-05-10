@@ -93,6 +93,68 @@
         });
     });
 
+    // ---- Scroll progress bar at top ----
+    if (!document.querySelector('.scroll-progress')) {
+        const bar = document.createElement('div');
+        bar.className = 'scroll-progress';
+        document.body.prepend(bar);
+        const updateProgress = () => {
+            const h = document.documentElement;
+            const scrollHeight = h.scrollHeight - h.clientHeight;
+            const pct = scrollHeight > 0 ? (h.scrollTop / scrollHeight) * 100 : 0;
+            bar.style.width = pct + '%';
+        };
+        window.addEventListener('scroll', updateProgress, { passive: true });
+        window.addEventListener('resize', updateProgress, { passive: true });
+        updateProgress();
+    }
+
+    // ---- In-view detection for additional decoration (eyebrow underline draw, grid stagger, etc) ----
+    if ('IntersectionObserver' in window) {
+        const decorObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('in-view');
+                    decorObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
+        document.querySelectorAll(
+            '.summit-eyebrow, .section-head, .grid-2, .grid-3, .grid-4, .props-grid, .featured-strip'
+        ).forEach(el => decorObs.observe(el));
+    } else {
+        document.querySelectorAll(
+            '.summit-eyebrow, .section-head, .grid-2, .grid-3, .grid-4, .props-grid, .featured-strip'
+        ).forEach(el => el.classList.add('in-view'));
+    }
+
+    // ---- Inject "View Property →" hover CTA on every property card with a detail page ----
+    document.querySelectorAll('a.prop').forEach(card => {
+        const photo = card.querySelector('.photo');
+        if (photo && !photo.querySelector('.hover-cta')) {
+            const cta = document.createElement('div');
+            cta.className = 'hover-cta';
+            cta.textContent = 'View Property';
+            photo.appendChild(cta);
+        }
+    });
+
+    // ---- Magnetic effect on primary CTAs (subtle, tasteful) ----
+    document.querySelectorAll(
+        '.hero .summit-btn-primary, .cta-banner .summit-btn-primary, .detail-cta-row .summit-btn-primary'
+    ).forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            // Max 6px nudge, scaled by distance from center
+            btn.style.transform = `translate(${x * 0.15}px, ${y * 0.2}px)`;
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = '';
+        });
+    });
+
     // ---- Smooth scroll for in-page anchors (already covered by html scroll-behavior, but add focus) ----
     document.querySelectorAll('a[href^="#"]').forEach(a => {
         a.addEventListener('click', (e) => {
