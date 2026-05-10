@@ -13,7 +13,9 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://teamsummitre.com/properties.html">
     <meta property="og:site_name" content="Summit Real Estate Services">
+    <meta property="og:image" content="https://teamsummitre.com/assets/photos/hero-stag-industrial.jpg">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://teamsummitre.com/assets/photos/hero-stag-industrial.jpg">
     <meta name="twitter:title" content="Properties We Manage | Summit Real Estate Services">
     <meta name="twitter:description" content="107 commercial real estate assets across 15 states.">
     <link rel="icon" type="image/svg+xml" href="assets/summit-logo-mark-navy.svg">
@@ -71,6 +73,9 @@
 </header>
 
 <section class="page-header">
+    <div class="hero-bg">
+        <img loading="lazy" src="assets/photos/hero-stag-industrial.jpg" alt="Multi-tenant industrial property aerial view">
+    </div>
     <div class="container">
         <span class="summit-eyebrow">Portfolio</span>
         <h1>Properties we manage.</h1>
@@ -337,12 +342,27 @@
         }
     }
 
+    function heroForProperty(p) {
+        const heroes = window.SUMMIT_HEROES || {};
+        const key = p.addr + '|' + p.city + '|' + p.state;
+        return heroes[key] || null;
+    }
+
     function propCard(p) {
         const el = document.createElement('div');
         el.className = 'prop';
+        const heroSlug = heroForProperty(p);
+        const photoHtml = heroSlug
+            ? '<div class="photo">' +
+              '<img loading="lazy" src="assets/property-heroes/' + heroSlug + '.jpg" alt="' + escapeHtml(p.addr + ' in ' + p.city) + '">' +
+              '</div>'
+            : '<div class="photo placeholder"></div>';
         el.innerHTML =
-            '<div class="addr">' + escapeHtml(p.addr) + '</div>' +
-            '<div class="city">' + escapeHtml(p.city) + '<span class="st">' + p.state + '</span></div>';
+            photoHtml +
+            '<div class="body">' +
+              '<div class="addr">' + escapeHtml(p.addr) + '</div>' +
+              '<div class="city">' + escapeHtml(p.city) + '<span class="st">' + p.state + '</span></div>' +
+            '</div>';
         return el;
     }
     function escapeHtml(s) {

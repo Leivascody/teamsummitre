@@ -143,6 +143,39 @@ window.SUMMIT_PROPERTIES = [
   { addr: "3551 Workman Road", city: "Knoxville", state: "TN" },
 ];
 
+// Slug-keyed map of properties that have a curated hero photo in
+// /assets/property-heroes/<slug>.jpg
+window.SUMMIT_HEROES = {
+  // Phase 2: top-20 properties + bonus
+  "1115 Cottonwood Avenue|Hartland|WI": "1115-cottonwood-hartland",
+  "201-215 Stag Industrial Boulevard|St. Louis|MO": "201-215-stag-industrial-stl",
+  "6501 Hall Street|St. Louis|MO": "6501-hall-street-stl",
+  "6601 Parkway Circle|Brooklyn Center|MN": "6601-parkway-circle-brooklyn-center",
+  "9009 N 51st Street|Brown Deer|WI": "9009-n-51st-brown-deer",
+  "8900 N. 55th Street|Brown Deer|WI": "8900-n-55th-brown-deer",
+  "9600 West 76th Street|Eden Prairie|MN": "9600-w-76th-eden-prairie",
+  "9700 West 76th Street|Eden Prairie|MN": "9700-w-76th-eden-prairie",
+  "10120 West 76th Street|Eden Prairie|MN": "10120-w-76th-eden-prairie",
+  "4333 W. 71st Street|Indianapolis|IN": "4333-w-71st-indianapolis",
+  "1477 Hoff Industrial Drive|O'Fallon|MO": "1477-hoff-industrial-ofallon",
+  "5450 Stratum Drive|Fort Worth|TX": "5450-stratum-fort-worth",
+  "3235 Intertech Drive|Brookfield|WI": "3235-intertech-brookfield",
+  "3275 Intertech Drive|Brookfield|WI": "3275-intertech-brookfield",
+  "7842 N. Faulkner Road|Milwaukee|WI": "7842-n-faulkner-milwaukee",
+  "W141 N9501 Fountain Boulevard|Menomonee Falls|WI": "w141-n9501-fountain-menomonee-falls",
+  "4700 Briar Road|Cleveland|OH": "4700-briar-cleveland",
+  "2-92 Soccer Park Drive|Fenton|MO": "2-92-soccer-park-fenton",
+  "1400 Grant Industrial Drive|O'Fallon|MO": "1400-grant-industrial-ofallon",
+  "1100 Cottonwood Avenue|Hartland|WI": "1100-cottonwood-hartland",
+  // Bonus from Phase 1 brand picks (also appear as property heroes)
+  "2327 Chouteau Avenue|St. Louis|MO": "2327-chouteau-stl",
+  "2676 Metro Boulevard|Maryland Heights|MO": "2676-metro-maryland-heights",
+  "4710 Earth City Expressway|Bridgeton|MO": "4710-earth-city-bridgeton",
+  "1241 Ambassador Boulevard|St. Louis|MO": "1241-ambassador-stl",
+  "2462-2470 Schuetz Road|Maryland Heights|MO": "2462-2470-schuetz-maryland-heights",
+  "2662 Metro Boulevard|Maryland Heights|MO": "2662-metro-maryland-heights",
+};
+
 window.SUMMIT_STATE_NAMES = {
   WI: "Wisconsin", MO: "Missouri", MN: "Minnesota", IN: "Indiana",
   GA: "Georgia",  AZ: "Arizona",  UT: "Utah",      OH: "Ohio",
