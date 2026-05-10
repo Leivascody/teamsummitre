@@ -652,6 +652,76 @@ a:hover { color: var(--summit-navy); }
     transition: color 0.15s;
 }
 .site-footer ul a:hover { color: var(--summit-white); }
+/* Newsletter band sits above footer-bottom */
+.site-footer .newsletter {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--summit-radius-lg);
+    padding: var(--summit-space-8);
+    margin-bottom: var(--summit-space-12);
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--summit-space-8);
+    align-items: center;
+}
+@media (max-width: 720px) {
+    .site-footer .newsletter { grid-template-columns: 1fr; }
+}
+.site-footer .newsletter h3 {
+    color: var(--summit-white);
+    font-size: 22px;
+    margin: 0 0 var(--summit-space-2);
+    line-height: 1.2;
+}
+.site-footer .newsletter p {
+    color: var(--summit-navy-300);
+    font-size: 14px;
+    margin: 0;
+    max-width: 44ch;
+}
+.site-footer .newsletter form {
+    display: flex;
+    gap: var(--summit-space-3);
+}
+.site-footer .newsletter input[type="email"] {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+    color: var(--summit-white);
+    border-radius: var(--summit-radius-md);
+    font-family: var(--summit-font-body);
+    font-size: 15px;
+    min-width: 0;
+}
+.site-footer .newsletter input[type="email"]:focus {
+    outline: 0;
+    border-color: var(--summit-bronze);
+    background: rgba(255,255,255,0.10);
+}
+.site-footer .newsletter input[type="email"]::placeholder { color: rgba(255,255,255,0.45); }
+.site-footer .newsletter button {
+    background: var(--summit-bronze);
+    color: var(--summit-white);
+    border: 0;
+    padding: 12px 22px;
+    font-family: var(--summit-font-display);
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--summit-radius-md);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+.site-footer .newsletter button:hover { background: #B89160; }
+.site-footer .newsletter .nl-status {
+    display: block;
+    margin-top: var(--summit-space-3);
+    font-size: 13px;
+    color: var(--summit-navy-300);
+    min-height: 16px;
+}
+
 .site-footer .footer-bottom {
     border-top: 1px solid rgba(255,255,255,0.1);
     padding-top: var(--summit-space-6);
@@ -1308,6 +1378,165 @@ a:hover { color: var(--summit-navy); }
 @media (max-width: 540px) {
     .gallery-grid { grid-template-columns: repeat(2, 1fr); }
     .gallery-grid > *:first-child { grid-column: span 2; grid-row: auto; }
+}
+
+/* Case Study card (used on home page Track Record section + press) */
+.cs-card {
+    background: var(--summit-white);
+    border: var(--summit-border-hairline);
+    border-radius: var(--summit-radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.cs-card:hover {
+    border-color: var(--summit-navy-300);
+    box-shadow: var(--summit-shadow-md);
+    transform: translateY(-2px);
+}
+.cs-card .photo {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    background: var(--summit-navy);
+    position: relative;
+}
+.cs-card .photo img {
+    width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;
+}
+.cs-card:hover .photo img { transform: scale(1.04); }
+.cs-card .photo .badge {
+    position: absolute; top: 12px; left: 12px;
+    background: var(--summit-bronze);
+    color: var(--summit-white);
+    font-family: var(--summit-font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+}
+.cs-card .body {
+    padding: var(--summit-space-6) var(--summit-space-6) var(--summit-space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--summit-space-3);
+    flex: 1;
+}
+.cs-card .city {
+    font-family: var(--summit-font-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--summit-bronze);
+}
+.cs-card h3 {
+    font-size: 22px;
+    margin: 0;
+    line-height: 1.2;
+}
+.cs-card p {
+    color: var(--summit-graphite);
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+.cs-card .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--summit-space-3);
+    margin-top: auto;
+    padding-top: var(--summit-space-4);
+    border-top: var(--summit-border-hairline);
+}
+.cs-card .metrics .m {
+    display: flex;
+    flex-direction: column;
+}
+.cs-card .metrics .m .v {
+    font-family: var(--summit-font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--summit-navy);
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+.cs-card .metrics .m .l {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--summit-slate);
+    margin-top: 2px;
+}
+
+/* Case study detail page layout */
+.cs-content {
+    padding: var(--summit-space-16) 0;
+}
+.cs-content .container { max-width: 880px; }
+.cs-content h2 {
+    font-size: clamp(28px, 3vw, 40px);
+    margin-top: var(--summit-space-12);
+    margin-bottom: var(--summit-space-4);
+}
+.cs-content p {
+    font-family: var(--summit-font-serif);
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--summit-graphite);
+}
+.cs-outcome {
+    background: var(--summit-navy);
+    color: var(--summit-white);
+    padding: var(--summit-space-12) var(--summit-space-10);
+    border-radius: var(--summit-radius-lg);
+    margin: var(--summit-space-8) 0;
+}
+.cs-outcome h3 {
+    color: var(--summit-white);
+    font-size: 22px;
+    margin: 0 0 var(--summit-space-6);
+}
+.cs-outcome .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--summit-space-6);
+}
+@media (max-width: 720px) {
+    .cs-outcome .metrics { grid-template-columns: repeat(2, 1fr); }
+}
+.cs-outcome .m .v {
+    font-family: var(--summit-font-display);
+    font-size: clamp(36px, 4vw, 48px);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #FFFFFF 0%, var(--summit-navy-300) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.cs-outcome .m .l {
+    font-family: var(--summit-font-display);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--summit-bronze);
+    margin-top: 6px;
+}
+
+.cs-disclaimer {
+    background: rgba(184, 132, 47, 0.08);
+    border-left: 3px solid var(--summit-warning);
+    padding: var(--summit-space-4) var(--summit-space-5);
+    font-size: 13px;
+    color: var(--summit-graphite);
+    border-radius: var(--summit-radius-md);
+    margin: var(--summit-space-6) 0;
 }
 
 /* Property video section (Phase 5) */

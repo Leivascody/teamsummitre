@@ -354,6 +354,43 @@
         window.SummitCmdK = { open, close };
     })();
 
+    // ---- Newsletter signup (footer) — uses provider endpoint if set, mailto fallback otherwise ----
+    document.querySelectorAll('.newsletter form').forEach(form => {
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const action = form.getAttribute('action') || '';
+            const email = form.querySelector('input[type="email"]').value.trim();
+            const status = form.parentElement.querySelector('.nl-status');
+            if (!email) return;
+            if (!action || action.includes('YOUR_NEWSLETTER_ENDPOINT')) {
+                // Fallback: open user's email client with a subscribe message
+                const subject = encodeURIComponent('Subscribe me to the Summit Industrial Brief');
+                const body = encodeURIComponent(`Please add ${email} to the Summit Industrial Brief mailing list.`);
+                window.location.href = `mailto:info@teamsummitre.com?subject=${subject}&body=${body}`;
+                if (status) status.textContent = 'Opening your email to confirm subscription…';
+                return;
+            }
+            if (status) status.textContent = 'Subscribing…';
+            fetch(action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            }).then(r => {
+                if (r.ok) {
+                    form.reset();
+                    if (status) {
+                        status.style.color = 'var(--summit-bronze)';
+                        status.textContent = 'Subscribed. Welcome to the Summit Industrial Brief.';
+                    }
+                } else if (status) {
+                    status.textContent = 'Something went wrong — email info@teamsummitre.com directly.';
+                }
+            }).catch(() => {
+                if (status) status.textContent = 'Network error — email info@teamsummitre.com directly.';
+            });
+        });
+    });
+
     // ---- Smooth scroll for in-page anchors (already covered by html scroll-behavior, but add focus) ----
     document.querySelectorAll('a[href^="#"]').forEach(a => {
         a.addEventListener('click', (e) => {
