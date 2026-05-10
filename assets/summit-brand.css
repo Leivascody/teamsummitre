@@ -1,0 +1,245 @@
+/* =============================================================================
+   Summit Real Estate Services — Brand Stylesheet
+   Drop-in token + base style sheet. Include this file in any HTML, email
+   template, or report and inherit the full visual language.
+
+       <link rel="stylesheet" href="summit-brand.css">
+       <!-- or copy-paste the :root variables into your own stylesheet -->
+
+   v1.0 — May 2026
+   ============================================================================= */
+
+/* Brand fonts — load once, reuse anywhere ----------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+    /* ── Color: Core ─────────────────────────────────────────────────────── */
+    --summit-navy: #19273C;            /* PRIMARY brand color (official) */
+    --summit-navy-900: #0F1827;        /* Deepest navy */
+    --summit-navy-800: #19273C;        /* = Primary */
+    --summit-navy-700: #243653;        /* Soft navy */
+    --summit-navy-500: #475A7A;        /* Mid navy */
+    --summit-navy-300: #92A1B8;        /* Muted navy */
+    --summit-navy-100: #D9DEE7;        /* Pale navy */
+    --summit-navy-50:  #F2F4F7;        /* Whisper navy */
+
+    /* ── Color: Neutrals ─────────────────────────────────────────────────── */
+    --summit-ink:      #0E1422;        /* Body text on light */
+    --summit-graphite: #3F4A5C;        /* Secondary text */
+    --summit-slate:    #6B7587;        /* Tertiary text */
+    --summit-fog:      #C9CDD4;        /* Borders */
+    --summit-mist:     #E8EAEE;        /* Subtle dividers */
+    --summit-paper:    #F7F7F5;        /* Off-white page */
+    --summit-white:    #FFFFFF;        /* Pure white */
+
+    /* ── Color: Accents (use sparingly) ──────────────────────────────────── */
+    --summit-bronze:   #9C7B4F;        /* Editorial accent */
+    --summit-ember:    #B8542F;        /* Hot accent */
+
+    /* ── Color: Semantic ─────────────────────────────────────────────────── */
+    --summit-success:  #3F7A5B;
+    --summit-warning:  #B8842F;
+    --summit-error:    #A53A2C;
+    --summit-info:     #4A6A92;
+
+    /* ── Typography: Families ────────────────────────────────────────────── */
+    --summit-font-display:  'Outfit', 'Helvetica Neue', Arial, sans-serif;
+    --summit-font-body:     'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --summit-font-serif:    'Source Serif 4', Georgia, serif;
+    --summit-font-mono:     'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+    /* ── Typography: Type Scale ──────────────────────────────────────────── */
+    --summit-text-display-2xl: 72px;
+    --summit-text-display-xl:  56px;
+    --summit-text-display-lg:  44px;
+    --summit-text-h1:          36px;
+    --summit-text-h2:          28px;
+    --summit-text-h3:          22px;
+    --summit-text-h4:          18px;
+    --summit-text-body-lg:     18px;
+    --summit-text-body:        16px;
+    --summit-text-body-sm:     14px;
+    --summit-text-caption:     12px;
+    --summit-text-eyebrow:     11px;
+    --summit-text-stat:        48px;
+
+    /* ── Spacing ─────────────────────────────────────────────────────────── */
+    --summit-space-1:  4px;
+    --summit-space-2:  8px;
+    --summit-space-3:  12px;
+    --summit-space-4:  16px;
+    --summit-space-5:  20px;
+    --summit-space-6:  24px;
+    --summit-space-8:  32px;
+    --summit-space-10: 40px;
+    --summit-space-12: 48px;
+    --summit-space-16: 64px;
+    --summit-space-20: 80px;
+    --summit-space-24: 96px;
+    --summit-space-32: 128px;
+
+    /* ── Radius ──────────────────────────────────────────────────────────── */
+    --summit-radius-sm:   2px;
+    --summit-radius-md:   4px;
+    --summit-radius-lg:   8px;
+    --summit-radius-xl:   12px;
+    --summit-radius-pill: 999px;
+
+    /* ── Shadows ─────────────────────────────────────────────────────────── */
+    --summit-shadow-sm: 0 1px 2px rgba(15,24,39,0.06), 0 1px 1px rgba(15,24,39,0.04);
+    --summit-shadow-md: 0 4px 12px rgba(15,24,39,0.08), 0 2px 4px rgba(15,24,39,0.06);
+    --summit-shadow-lg: 0 12px 32px rgba(15,24,39,0.10), 0 4px 8px rgba(15,24,39,0.06);
+    --summit-shadow-xl: 0 24px 64px rgba(15,24,39,0.14);
+
+    /* ── Borders ─────────────────────────────────────────────────────────── */
+    --summit-border-hairline: 1px solid var(--summit-mist);
+    --summit-border-subtle:   1px solid var(--summit-fog);
+    --summit-border-strong:   1px solid var(--summit-navy);
+    --summit-border-rule:     2px solid var(--summit-navy);
+
+    /* ── Layout ──────────────────────────────────────────────────────────── */
+    --summit-page-max:    1200px;
+    --summit-letter-w:    8.5in;
+    --summit-letter-h:    11in;
+}
+
+/* ── Base reset & typography defaults ─────────────────────────────────────── */
+.summit-base, .summit-base * { box-sizing: border-box; }
+
+.summit-base {
+    font-family: var(--summit-font-body);
+    font-size: var(--summit-text-body);
+    line-height: 1.625;
+    color: var(--summit-ink);
+    background: var(--summit-paper);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+.summit-base h1, .summit-base h2, .summit-base h3, .summit-base h4,
+.summit-base h5, .summit-base h6 {
+    font-family: var(--summit-font-display);
+    color: var(--summit-navy);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5em;
+}
+.summit-base h1 { font-size: var(--summit-text-h1); line-height: 1.18; }
+.summit-base h2 { font-size: var(--summit-text-h2); line-height: 1.25; }
+.summit-base h3 { font-size: var(--summit-text-h3); line-height: 1.32; }
+.summit-base h4 { font-size: var(--summit-text-h4); line-height: 1.4;  }
+
+.summit-base p { margin: 0 0 1em; }
+.summit-base a { color: var(--summit-navy-700); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.summit-base a:hover { color: var(--summit-navy); }
+
+.summit-base hr { border: 0; border-top: var(--summit-border-rule); margin: var(--summit-space-8) 0; }
+
+/* ── Reusable component classes ───────────────────────────────────────────── */
+
+/* All-caps eyebrow label */
+.summit-eyebrow {
+    font-family: var(--summit-font-display);
+    font-size: var(--summit-text-eyebrow);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--summit-navy);
+}
+
+/* Display headline */
+.summit-display {
+    font-family: var(--summit-font-display);
+    font-size: var(--summit-text-display-xl);
+    line-height: 1.07;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--summit-navy);
+}
+
+/* Stat / big number */
+.summit-stat {
+    font-family: var(--summit-font-display);
+    font-size: var(--summit-text-stat);
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--summit-navy);
+}
+.summit-stat-label {
+    font-family: var(--summit-font-body);
+    font-size: var(--summit-text-caption);
+    color: var(--summit-graphite);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: var(--summit-space-2);
+}
+
+/* Buttons */
+.summit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--summit-space-2);
+    font-family: var(--summit-font-display);
+    font-size: var(--summit-text-body-sm);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 12px 22px;
+    border-radius: var(--summit-radius-md);
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.summit-btn-primary {
+    background: var(--summit-navy);
+    color: var(--summit-white);
+}
+.summit-btn-primary:hover { background: var(--summit-navy-900); color: var(--summit-white); }
+.summit-btn-secondary {
+    background: transparent;
+    color: var(--summit-navy);
+    border-color: var(--summit-navy);
+}
+.summit-btn-secondary:hover { background: var(--summit-navy); color: var(--summit-white); }
+
+/* Card */
+.summit-card {
+    background: var(--summit-white);
+    border: var(--summit-border-hairline);
+    border-radius: var(--summit-radius-lg);
+    padding: var(--summit-space-8);
+    box-shadow: var(--summit-shadow-sm);
+}
+
+/* Divider */
+.summit-rule        { border: 0; border-top: var(--summit-border-rule); margin: var(--summit-space-8) 0; }
+.summit-rule-thin   { border: 0; border-top: var(--summit-border-hairline); margin: var(--summit-space-6) 0; }
+.summit-rule-bronze { border: 0; border-top: 1px solid var(--summit-bronze); margin: var(--summit-space-6) 0; }
+
+/* Section eyebrow + rule pattern (matches the existing one-pager look) */
+.summit-section-head {
+    border-bottom: var(--summit-border-rule);
+    padding-bottom: var(--summit-space-2);
+    margin-bottom: var(--summit-space-6);
+    display: inline-block;
+    color: var(--summit-navy);
+    font-family: var(--summit-font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Surface variants */
+.summit-surface-navy { background: var(--summit-navy); color: var(--summit-white); }
+.summit-surface-navy h1, .summit-surface-navy h2, .summit-surface-navy h3,
+.summit-surface-navy h4 { color: var(--summit-white); }
+.summit-surface-paper { background: var(--summit-paper); color: var(--summit-ink); }
+.summit-surface-mist  { background: var(--summit-navy-50); color: var(--summit-ink); }
+
+/* Print presets */
+@media print {
+    .summit-base { background: white; }
+    .summit-no-print { display: none !important; }
+}
