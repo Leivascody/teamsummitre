@@ -1620,6 +1620,290 @@ a.prop:hover .photo .hover-cta::after {
     z-index: 0;
 }
 
+/* =============================================================================
+   PUNCH PASS — editorial, video-text, gradient mesh, custom cursor
+   ============================================================================= */
+
+/* Video-clipped text section — drone footage visible only inside huge letters */
+.video-text-section {
+    position: relative;
+    background: var(--summit-navy);
+    color: var(--summit-white);
+    padding: var(--summit-space-20) 0;
+    overflow: hidden;
+}
+.video-text-section .vt-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+.video-text-section .vt-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.video-text-section .vt-mask {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+.video-text-section .vt-mask svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.video-text-section .vt-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    pointer-events: none;
+}
+.video-text-section .vt-content .summit-eyebrow {
+    color: var(--summit-bronze);
+    margin-bottom: var(--summit-space-6);
+    display: inline-block;
+}
+.video-text-section .vt-content p {
+    font-family: var(--summit-font-serif);
+    font-size: clamp(18px, 1.6vw, 22px);
+    line-height: 1.55;
+    color: var(--summit-navy-100);
+    max-width: 60ch;
+    margin: var(--summit-space-8) auto 0;
+}
+
+/* Editorial massive-stats section ("By The Numbers") */
+.big-stats {
+    background: var(--summit-navy);
+    color: var(--summit-white);
+    padding: var(--summit-space-24) 0;
+    position: relative;
+    overflow: hidden;
+}
+.big-stats::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(156,123,79,0.18), transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(184,84,47,0.10), transparent 50%),
+        radial-gradient(circle at 60% 30%, rgba(74,106,146,0.12), transparent 45%);
+    pointer-events: none;
+    animation: mesh-drift 20s ease-in-out infinite alternate;
+}
+@keyframes mesh-drift {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(2%, -2%) scale(1.05); }
+}
+.big-stats .container { position: relative; z-index: 1; }
+.big-stats .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    padding-bottom: var(--summit-space-6);
+    margin-bottom: var(--summit-space-12);
+    flex-wrap: wrap;
+    gap: var(--summit-space-4);
+}
+.big-stats .head .summit-eyebrow {
+    color: var(--summit-bronze);
+    font-size: 12px;
+}
+.big-stats .head .label {
+    font-family: var(--summit-font-display);
+    font-size: 13px;
+    color: var(--summit-navy-300);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.big-stats .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--summit-space-8);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: var(--summit-space-12);
+    margin-bottom: var(--summit-space-12);
+    align-items: end;
+}
+.big-stats .row:last-child {
+    border-bottom: 0;
+    margin-bottom: 0;
+}
+@media (max-width: 880px) { .big-stats .row { grid-template-columns: 1fr; } }
+.big-stats .stat-num {
+    font-family: var(--summit-font-display);
+    font-size: clamp(80px, 12vw, 200px);
+    font-weight: 600;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: var(--summit-white);
+    background: linear-gradient(180deg, #FFFFFF 0%, #C9D6F0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.big-stats .stat-label {
+    font-family: var(--summit-font-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--summit-bronze);
+    margin-top: var(--summit-space-3);
+}
+.big-stats .stat-detail {
+    font-family: var(--summit-font-serif);
+    font-size: 16px;
+    color: var(--summit-navy-100);
+    margin-top: var(--summit-space-2);
+    line-height: 1.5;
+    max-width: 28ch;
+}
+
+/* Manifesto pull-quote section */
+.manifesto {
+    background: var(--summit-paper);
+    padding: var(--summit-space-24) 0;
+    position: relative;
+}
+.manifesto .container { max-width: 1000px; }
+.manifesto blockquote {
+    font-family: var(--summit-font-serif);
+    font-style: italic;
+    font-size: clamp(28px, 3.5vw, 48px);
+    line-height: 1.25;
+    color: var(--summit-navy);
+    margin: 0;
+    padding: 0;
+    position: relative;
+    text-wrap: balance;
+}
+.manifesto blockquote::before,
+.manifesto blockquote::after {
+    color: var(--summit-bronze);
+    font-size: 1.2em;
+    line-height: 0;
+}
+.manifesto blockquote::before {
+    content: "\201C";
+    margin-right: 4px;
+    vertical-align: -0.05em;
+}
+.manifesto blockquote::after {
+    content: "\201D";
+    margin-left: 4px;
+    vertical-align: -0.05em;
+}
+.manifesto .attribution {
+    margin-top: var(--summit-space-8);
+    font-family: var(--summit-font-display);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--summit-graphite);
+    display: flex;
+    align-items: center;
+    gap: var(--summit-space-3);
+}
+.manifesto .attribution::before {
+    content: "";
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--summit-bronze);
+}
+
+/* Editorial section markers — oversized bronze "01 / 02 / 03" */
+.section-num {
+    font-family: var(--summit-font-display);
+    font-size: clamp(48px, 6vw, 96px);
+    font-weight: 600;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--summit-bronze);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--summit-space-4);
+    display: block;
+}
+
+/* Custom cursor — subtle bronze ring that follows mouse on desktop */
+@media (hover: hover) and (pointer: fine) {
+    body { cursor: none; }
+    a, button, .nav-toggle, .prop, .featured-strip a, .gallery-grid > * {
+        cursor: none;
+    }
+    /* Restore OS cursor on text inputs so users can see where they're typing */
+    input[type="text"], input[type="email"], input[type="tel"], input[type="search"],
+    textarea, select {
+        cursor: auto;
+    }
+    .summit-cursor {
+        position: fixed;
+        top: 0; left: 0;
+        width: 28px;
+        height: 28px;
+        border: 1.5px solid var(--summit-bronze);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9000;
+        transform: translate(-50%, -50%);
+        transition: width 0.18s ease, height 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        mix-blend-mode: difference;
+        will-change: transform;
+    }
+    .summit-cursor::after {
+        content: "";
+        position: absolute;
+        inset: 50%;
+        width: 4px;
+        height: 4px;
+        background: var(--summit-bronze);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .summit-cursor.hover {
+        width: 56px;
+        height: 56px;
+        border-color: var(--summit-white);
+    }
+    .summit-cursor.hover::after {
+        background: var(--summit-white);
+    }
+}
+
+/* Gradient mesh on existing dark sections (CTA banner, video sections) */
+.cta-banner {
+    position: relative;
+}
+.cta-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(156,123,79,0.12), transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(74,106,146,0.10), transparent 50%);
+    pointer-events: none;
+    animation: mesh-drift 25s ease-in-out infinite alternate-reverse;
+}
+.cta-banner .container { position: relative; z-index: 1; }
+
+/* Bronze accent decoration — bracket marks around section titles */
+.bracketed {
+    position: relative;
+    padding-left: var(--summit-space-6);
+}
+.bracketed::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--summit-bronze), transparent);
+}
+
 /* Utility */
 .text-center { text-align: center; }
 .mt-8 { margin-top: var(--summit-space-8); }
