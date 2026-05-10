@@ -1658,10 +1658,13 @@ a.prop:hover .photo .hover-cta::after {
     z-index: 2;
     text-align: center;
     pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: clamp(360px, 32vw, 460px);
 }
 .video-text-section .vt-content .summit-eyebrow {
     color: var(--summit-bronze);
-    margin-bottom: var(--summit-space-6);
     display: inline-block;
 }
 .video-text-section .vt-content p {
@@ -1670,7 +1673,7 @@ a.prop:hover .photo .hover-cta::after {
     line-height: 1.55;
     color: var(--summit-navy-100);
     max-width: 60ch;
-    margin: var(--summit-space-8) auto 0;
+    margin: 0 auto;
 }
 
 /* Editorial massive-stats section ("By The Numbers") */
@@ -1957,8 +1960,14 @@ a.prop:hover .photo .hover-cta::after {
 .site-header .status-pill {
     margin-left: var(--summit-space-3);
 }
-@media (max-width: 760px) {
+/* Hide pill earlier so the header doesn't crowd on smaller desktops */
+@media (max-width: 1180px) {
     .site-header .status-pill { display: none; }
+}
+/* Hide cmdk-trigger label below 1024px to save space */
+@media (max-width: 1024px) {
+    .cmdk-trigger .cmdk-text { display: none; }
+    .cmdk-trigger { padding: 8px 10px; }
 }
 
 /* Command palette ⌘K trigger button (sits in nav) */
