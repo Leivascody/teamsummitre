@@ -26,23 +26,28 @@ PHOTOS_SRC = Path("/Users/codyleivas/Library/CloudStorage/Dropbox-Personal/04_Bu
 VIDEO_DEST = Path("/Users/codyleivas/Library/CloudStorage/Dropbox-Personal/04_Business/Summit_Real_Estate_Services/Marketing/Brand_System/website/assets/property-videos")
 DETAIL_DIR = Path("/Users/codyleivas/Library/CloudStorage/Dropbox-Personal/04_Business/Summit_Real_Estate_Services/Marketing/Brand_System/website/property")
 
-# (slug, source_relative_path, addr, city)
+# (slug, source_relative_path, addr, city, hero_slug)
 VIDEOS = [
     ("stag-industrial-stl",
      "Missouri/201-215 Stag Industrial Boulevard - St. Louis/DJI_0329.MP4",
-     "201-215 Stag Industrial Boulevard", "St. Louis"),
+     "201-215 Stag Industrial Boulevard", "St. Louis",
+     "201-215-stag-industrial-stl"),
     ("parkway-circle-brooklyn-center",
      "Minnesota/6601 Parkway Circle - Brooklyn Center/DJI_0189.MP4",
-     "6601 Parkway Circle", "Brooklyn Center"),
+     "6601 Parkway Circle", "Brooklyn Center",
+     "6601-parkway-circle-brooklyn-center"),
     ("1115-cottonwood-hartland",
      "Wisconsin/1115 Cottonwood Avenue - Hartland/DJI_0662.MP4",
-     "1115 Cottonwood Avenue", "Hartland"),
+     "1115 Cottonwood Avenue", "Hartland",
+     "1115-cottonwood-hartland"),
     ("1100-cottonwood-hartland",
      "Wisconsin/1100 Cottonwood Avenue - Hartland/DJI_0661.MP4",
-     "1100 Cottonwood Avenue", "Hartland"),
+     "1100 Cottonwood Avenue", "Hartland",
+     "1100-cottonwood-hartland"),
     ("grant-industrial-ofallon",
      "Missouri/1400 Grant Industrial Drive - O'Fallon/DJI_0383.MP4",
-     "1400 Grant Industrial Drive", "O'Fallon"),
+     "1400 Grant Industrial Drive", "O'Fallon",
+     "1400-grant-industrial-ofallon"),
 ]
 
 START_SECONDS = 2     # skip takeoff
@@ -82,7 +87,7 @@ VIDEO_SECTION_TEMPLATE = """
         <span class="summit-eyebrow">Aerial Footage</span>
         <h2>{addr}, {city}.</h2>
         <div class="video-wrap">
-            <video autoplay muted loop playsinline preload="metadata">
+            <video autoplay muted loop playsinline preload="auto" poster="../assets/property-heroes/{hero_slug}.jpg">
                 <source src="../assets/property-videos/{slug}.mp4" type="video/mp4">
             </video>
         </div>
@@ -91,7 +96,7 @@ VIDEO_SECTION_TEMPLATE = """
 """
 
 
-def inject_video_section(slug, addr, city):
+def inject_video_section(slug, addr, city, hero_slug):
     """Inject video section into the property detail HTML before the gallery section.
     Idempotent: skips if already injected (look for <!-- video-section --> marker)."""
     page = DETAIL_DIR / f"{slug}.html"
@@ -109,7 +114,7 @@ def inject_video_section(slug, addr, city):
             flags=re.DOTALL,
         )
     # Inject before <section class="section surface-paper"> (the gallery section)
-    block = VIDEO_SECTION_TEMPLATE.format(addr=addr, city=city, slug=slug)
+    block = VIDEO_SECTION_TEMPLATE.format(addr=addr, city=city, slug=slug, hero_slug=hero_slug)
     new_content = content.replace(
         '<section class="section surface-paper">',
         block + '<section class="section surface-paper">',
@@ -134,7 +139,7 @@ def main():
     print(f"Dest:   {VIDEO_DEST}\n")
 
     ok = 0
-    for slug, rel_src, addr, city in VIDEOS:
+    for slug, rel_src, addr, city, hero_slug in VIDEOS:
         src = PHOTOS_SRC / rel_src
         dest = VIDEO_DEST / f"{slug}.mp4"
         if not src.exists():
@@ -151,7 +156,7 @@ def main():
             mb = dest.stat().st_size / 1024 / 1024
             print(f"  ✓ {dest.name} ({mb:.1f}MB)")
 
-        if inject_video_section(slug, addr, city):
+        if inject_video_section(slug, addr, city, hero_slug):
             print(f"     → embedded in property/{slug}.html")
             ok += 1
 
