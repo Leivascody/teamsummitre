@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summit Real Estate Services | Commercial Real Estate Operator & Manager</title>
-    <meta name="description" content="Summit Real Estate Services is a fully integrated operator and manager of core-plus commercial real estate. We acquire and operate leased commercial properties across the United States — 107 assets, 189 tenants, 15 states.">
+    <meta name="description" content="Summit Real Estate Services is a fully integrated commercial real estate operator. 107 assets, 189 tenants, 15 states — concentrated in the Twin Cities, Milwaukee, and St. Louis.">
     <meta name="keywords" content="commercial real estate operator, commercial real estate manager, core-plus real estate, industrial real estate advisor, commercial property acquisition, commercial asset management, family office commercial real estate, private equity real estate operating partner">
     <meta name="author" content="Summit Real Estate Services">
     <meta name="theme-color" content="#19273C">
@@ -106,7 +106,7 @@
     <div class="pb-content container">
         <span class="summit-eyebrow">Operate · Acquire · Steward</span>
         <h2>Built to operate. Built to last.</h2>
-        <p>One of the most active commercial real estate platforms in the United States — institutional discipline, boutique service, owner-aligned execution.</p>
+        <p>An active commercial real estate platform with institutional discipline, boutique service, and owner-aligned execution.</p>
     </div>
 </section>
 
@@ -289,63 +289,48 @@
     </div>
 </section>
 
-<!-- FEATURED PROPERTIES -->
+<!-- PRIMARY MARKETS — three-up market cards -->
 <section class="section surface-paper">
     <div class="container">
         <div class="section-head">
-            <span class="summit-eyebrow">Featured Assets</span>
-            <h2>Across 15 states, coast to coast.</h2>
-            <p>A representative cross-section of properties under management — concentrated in the markets where we can run buildings well, selectively present elsewhere when our investors have conviction.</p>
+            <span class="summit-eyebrow">Primary Markets</span>
+            <h2>Three markets where we operate with depth.</h2>
+            <p>Summit concentrates where it has institutional infrastructure on the ground — vendors, brokers, and operators who know each market cold. Selective deployment elsewhere keeps the platform national without spreading the team thin.</p>
         </div>
-        <div class="featured-strip">
-            <a href="property/stag-industrial-stl.html">
-                <img loading="lazy" src="assets/property-heroes/201-215-stag-industrial-stl.jpg" alt="Stag Industrial Boulevard, St. Louis">
-                <div class="meta">
-                    <div class="city">St. Louis, MO</div>
-                    <div class="name">Stag Industrial Boulevard</div>
-                </div>
-            </a>
-            <a href="property/parkway-circle-brooklyn-center.html">
-                <img loading="lazy" src="assets/property-heroes/6601-parkway-circle-brooklyn-center.jpg" alt="Parkway Circle, Brooklyn Center">
-                <div class="meta">
-                    <div class="city">Brooklyn Center, MN</div>
-                    <div class="name">Parkway Circle</div>
-                </div>
-            </a>
-            <a href="property/1100-cottonwood-hartland.html">
-                <img loading="lazy" src="assets/property-heroes/1100-cottonwood-hartland.jpg" alt="Cottonwood Avenue, Hartland">
-                <div class="meta">
-                    <div class="city">Hartland, WI</div>
-                    <div class="name">Cottonwood Industrial</div>
-                </div>
-            </a>
-            <a href="property/4333-w-71st-indianapolis.html">
-                <img loading="lazy" src="assets/property-heroes/4333-w-71st-indianapolis.jpg" alt="W. 71st Street, Indianapolis">
-                <div class="meta">
-                    <div class="city">Indianapolis, IN</div>
-                    <div class="name">W. 71st Street Distribution</div>
-                </div>
-            </a>
-            <a href="property/hall-street-stl.html">
-                <img loading="lazy" src="assets/property-heroes/6501-hall-street-stl.jpg" alt="Hall Street, St. Louis">
-                <div class="meta">
-                    <div class="city">St. Louis, MO</div>
-                    <div class="name">Hall Street Distribution</div>
-                </div>
-            </a>
-            <a href="property/metro-blvd-maryland-heights.html">
-                <img loading="lazy" src="assets/property-heroes/2676-metro-maryland-heights.jpg" alt="Metro Boulevard, Maryland Heights">
-                <div class="meta">
-                    <div class="city">Maryland Heights, MO</div>
-                    <div class="name">Metro Boulevard</div>
-                </div>
-            </a>
-        </div>
+        <div class="market-grid" id="homeMarketGrid"></div>
         <div class="text-center mt-12">
-            <a href="properties.html" class="summit-btn summit-btn-secondary">Search the Full Portfolio</a>
+            <a href="properties.html" class="summit-btn summit-btn-secondary">View Full Portfolio</a>
         </div>
     </div>
 </section>
+
+<script>
+// Render the three primary market cards on the home page.
+(function () {
+    var grid = document.getElementById('homeMarketGrid');
+    var props = window.SUMMIT_PROPERTIES || [];
+    var markets = window.SUMMIT_PRIMARY_MARKETS || [];
+    if (!grid || !markets.length) return;
+    var counts = {};
+    props.forEach(function (p) { counts[p.state] = (counts[p.state] || 0) + 1; });
+    markets.forEach(function (m) {
+        var n = counts[m.state] || 0;
+        var a = document.createElement('a');
+        a.className = 'market-card fade-up';
+        a.href = 'properties.html#state-' + m.state;
+        a.innerHTML =
+            '<div class="photo"><img loading="lazy" src="assets/property-heroes/' + m.heroSlug + '.jpg" alt="' + m.heroAlt + '"></div>' +
+            '<div class="body">' +
+              '<div class="market-meta"><span class="city">' + m.label + '</span><span class="region">' + m.region + '</span></div>' +
+              '<div class="market-count"><strong>' + n + '</strong> assets under management</div>' +
+              '<p>' + m.tagline + '</p>' +
+              '<span class="market-cta">View ' + m.label + ' assets &rarr;</span>' +
+            '</div>';
+        grid.appendChild(a);
+    });
+    if (window.observeFadeUps) window.observeFadeUps();
+})();
+</script>
 
 <!-- TRACK RECORD — case studies -->
 <section class="section surface-white">

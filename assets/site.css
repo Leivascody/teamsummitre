@@ -1190,6 +1190,182 @@ a:hover { color: var(--summit-navy); }
     border: 1px dashed var(--summit-fog);
     border-radius: var(--summit-radius-lg);
 }
+
+/* =============================================================================
+   PRIMARY MARKET CARDS — three-up grid for Twin Cities / Milwaukee / St. Louis
+   ============================================================================= */
+.market-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--summit-space-6);
+    margin-top: var(--summit-space-8);
+}
+@media (max-width: 980px) { .market-grid { grid-template-columns: 1fr; } }
+
+.market-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--summit-white);
+    border: var(--summit-border-hairline);
+    border-radius: var(--summit-radius-lg);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.market-card:hover {
+    border-color: var(--summit-navy);
+    box-shadow: var(--summit-shadow-lg);
+    transform: translateY(-3px);
+}
+.market-card .photo {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--summit-navy);
+}
+.market-card .photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.market-card:hover .photo img { transform: scale(1.05); }
+.market-card .body {
+    padding: var(--summit-space-6) var(--summit-space-6) var(--summit-space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--summit-space-3);
+    flex: 1;
+}
+.market-card .market-meta {
+    display: flex;
+    align-items: baseline;
+    gap: var(--summit-space-2);
+}
+.market-card .market-meta .city {
+    font-family: var(--summit-font-display);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--summit-navy);
+    line-height: 1;
+}
+.market-card .market-meta .region {
+    font-size: 13px;
+    color: var(--summit-graphite);
+    font-family: var(--summit-font-display);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.market-card .market-count {
+    font-family: var(--summit-font-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--summit-bronze);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.market-card .market-count strong {
+    font-size: 15px;
+    color: var(--summit-navy);
+    margin-right: 4px;
+}
+.market-card p {
+    font-family: var(--summit-font-serif);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--summit-ink);
+    margin: 0;
+}
+.market-card .market-cta {
+    margin-top: auto;
+    padding-top: var(--summit-space-3);
+    font-family: var(--summit-font-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--summit-navy);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* "Additional Markets" divider header inside the property list */
+.additional-markets-head {
+    margin: var(--summit-space-12) 0 var(--summit-space-8);
+    padding-top: var(--summit-space-8);
+    border-top: 1px solid var(--summit-fog);
+}
+.additional-markets-head .summit-eyebrow {
+    display: block;
+    margin-bottom: var(--summit-space-2);
+}
+.additional-markets-head h3 {
+    font-family: var(--summit-font-display);
+    font-size: clamp(24px, 2.4vw, 32px);
+    font-weight: 600;
+    color: var(--summit-navy);
+    letter-spacing: -0.01em;
+    margin: 0 0 var(--summit-space-3);
+}
+.additional-markets-head p {
+    font-family: var(--summit-font-serif);
+    font-size: 17px;
+    color: var(--summit-graphite);
+    line-height: 1.55;
+    max-width: 64ch;
+}
+
+/* Primary-state highlight in US tile map and state index */
+.us-tile-map .state.active.primary {
+    background: var(--summit-bronze);
+    color: var(--summit-white);
+}
+.us-tile-map .state.active.primary:hover {
+    background: var(--summit-bronze-dark, #82663F);
+}
+.state-index a.primary {
+    border-color: var(--summit-bronze);
+    color: var(--summit-navy);
+    background: rgba(156,123,79,0.08);
+}
+.state-index a.primary .num { color: var(--summit-bronze); }
+
+/* Address-only property card (no photo) — quieter compact treatment */
+.prop.no-photo {
+    background: var(--summit-white);
+}
+.prop.no-photo .body {
+    padding: var(--summit-space-5) var(--summit-space-5);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 110px;
+}
+.prop.no-photo .addr {
+    font-size: 16px;
+}
+.prop.no-photo .card-cta {
+    display: inline-block;
+    margin-top: var(--summit-space-3);
+    font-family: var(--summit-font-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--summit-navy);
+}
+
+/* Compact grid for "Additional Markets" — more density for address-only */
+.props-grid.compact {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--summit-space-3);
+}
+@media (max-width: 1080px) { .props-grid.compact { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 720px)  { .props-grid.compact { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px)  { .props-grid.compact { grid-template-columns: 1fr; } }
 .empty-state strong {
     display: block;
     font-family: var(--summit-font-display);

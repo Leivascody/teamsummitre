@@ -83,12 +83,24 @@
     <div class="container">
         <span class="summit-eyebrow">Portfolio</span>
         <h1>Properties we manage.</h1>
-        <p>Summit Real Estate Services currently manages <strong style="color:var(--summit-white)">107 assets</strong> and <strong style="color:var(--summit-white)">189 tenants</strong> across <strong style="color:var(--summit-white)">15 states</strong>. Search the full nationwide portfolio below.</p>
+        <p>Summit Real Estate Services currently manages <strong style="color:var(--summit-white)">107 assets</strong> and <strong style="color:var(--summit-white)">189 tenants</strong> across <strong style="color:var(--summit-white)">15 states</strong>, with deepest concentrations in the Twin Cities, Milwaukee, and St. Louis.</p>
     </div>
 </section>
 
-<!-- Stats + US tile map -->
-<section class="section surface-paper tight">
+<!-- THREE PRIMARY MARKETS -->
+<section class="section surface-paper">
+    <div class="container">
+        <div class="section-head">
+            <span class="summit-eyebrow">Primary Markets</span>
+            <h2>Three markets where we have institutional depth.</h2>
+            <p>Summit concentrates in markets we know cold — with vendors, brokers, and operators on the ground every day. The rest of the portfolio is selective deployment alongside investor-aligned conviction.</p>
+        </div>
+        <div class="market-grid" id="marketGrid"></div>
+    </div>
+</section>
+
+<!-- US tile map + stats -->
+<section class="section surface-white tight">
     <div class="container">
         <div class="grid-2 fade-up" style="align-items: stretch;">
             <div class="us-map-wrap">
@@ -104,8 +116,8 @@
             <div style="display:flex; flex-direction: column; justify-content: center; gap: var(--summit-space-6);">
                 <div>
                     <span class="summit-eyebrow">Why It Matters</span>
-                    <h2 style="margin-top: var(--summit-space-3);">Coast to coast, with depth in every market we enter.</h2>
-                    <p style="font-family: var(--summit-font-serif); font-size: 18px; color: var(--summit-graphite); line-height: 1.6;">We don't spread thin. We concentrate in markets where we can run buildings well — Wisconsin, Missouri, Minnesota, Georgia — and selectively step into others where our investors have conviction.</p>
+                    <h2 style="margin-top: var(--summit-space-3);">Concentrated where it counts.</h2>
+                    <p style="font-family: var(--summit-font-serif); font-size: 18px; color: var(--summit-graphite); line-height: 1.6;">Three primary markets account for the majority of assets under management. Selective deployment elsewhere keeps the platform national in scope without spreading the operating team thin.</p>
                 </div>
                 <div class="stats-block" style="border-top: 0; border-bottom: 0; padding: 0; grid-template-columns: repeat(3, 1fr);">
                     <div>
@@ -126,13 +138,13 @@
     </div>
 </section>
 
-<!-- Search + filter + properties list -->
-<section class="section surface-white">
+<!-- Search + filter + full address list -->
+<section class="section surface-paper">
     <div class="container">
         <div class="section-head">
-            <span class="summit-eyebrow">Full Portfolio</span>
-            <h2>Search 107 commercial properties.</h2>
-            <p>Filter by state or search by city or street address.</p>
+            <span class="summit-eyebrow">Full Address List</span>
+            <h2>Every asset, every address.</h2>
+            <p>Search by city or street address, or jump straight to a state. Properties with detail pages link through to full case studies and galleries.</p>
         </div>
 
         <div class="filter-bar">
@@ -267,6 +279,8 @@
 
     const props = window.SUMMIT_PROPERTIES || [];
     const STATE_NAMES = window.SUMMIT_STATE_NAMES || {};
+    const PRIMARY_MARKETS = window.SUMMIT_PRIMARY_MARKETS || [];
+    const PRIMARY_STATES = new Set(PRIMARY_MARKETS.map(m => m.state));
     const stateCounts = {};
     props.forEach(p => stateCounts[p.state] = (stateCounts[p.state] || 0) + 1);
     const activeStates = new Set(Object.keys(stateCounts));
@@ -276,27 +290,53 @@
     if (map) {
         TILE_LAYOUT.forEach(([abbr, col, row]) => {
             const el = document.createElement('div');
-            el.className = 'state' + (activeStates.has(abbr) ? ' active' : '');
+            const isPrimary = PRIMARY_STATES.has(abbr);
+            const isActive = activeStates.has(abbr);
+            el.className = 'state' + (isActive ? ' active' : '') + (isPrimary ? ' primary' : '');
             el.style.gridColumn = col;
             el.style.gridRow = row;
             el.textContent = abbr;
             const count = stateCounts[abbr];
             const stateName = STATE_NAMES[abbr] || abbr;
-            el.title = activeStates.has(abbr)
-                ? `${stateName}: ${count} ${count === 1 ? 'property' : 'properties'}`
+            el.title = isActive
+                ? `${stateName}${isPrimary ? ' (primary market)' : ''}: ${count} ${count === 1 ? 'property' : 'properties'}`
                 : stateName;
             map.appendChild(el);
         });
     }
 
-    // --- Build state quick-jump index ---
+    // --- Build market hero cards (Twin Cities, Milwaukee, St. Louis) ---
+    const marketGrid = document.getElementById('marketGrid');
+    if (marketGrid) {
+        PRIMARY_MARKETS.forEach(m => {
+            const count = stateCounts[m.state] || 0;
+            const a = document.createElement('a');
+            a.className = 'market-card fade-up';
+            a.href = '#state-' + m.state;
+            a.innerHTML =
+                '<div class="photo"><img loading="lazy" src="assets/property-heroes/' + m.heroSlug + '.jpg" alt="' + m.heroAlt + '"></div>' +
+                '<div class="body">' +
+                  '<div class="market-meta"><span class="city">' + m.label + '</span><span class="region">' + m.region + '</span></div>' +
+                  '<div class="market-count"><strong>' + count + '</strong> assets under management</div>' +
+                  '<p>' + m.tagline + '</p>' +
+                  '<span class="market-cta">View ' + m.label + ' assets &rarr;</span>' +
+                '</div>';
+            marketGrid.appendChild(a);
+        });
+    }
+
+    // --- Build state quick-jump index (primary markets first, then alphabetical) ---
     const idx = document.getElementById('stateIndex');
-    const sortedStates = Object.keys(stateCounts).sort((a, b) =>
-        (STATE_NAMES[a] || a).localeCompare(STATE_NAMES[b] || b));
+    const primaryOrder = PRIMARY_MARKETS.map(m => m.state);
+    const otherStates = Object.keys(stateCounts)
+        .filter(s => !PRIMARY_STATES.has(s))
+        .sort((a, b) => (STATE_NAMES[a] || a).localeCompare(STATE_NAMES[b] || b));
+    const sortedStates = [...primaryOrder.filter(s => activeStates.has(s)), ...otherStates];
     if (idx) {
         sortedStates.forEach(st => {
             const a = document.createElement('a');
             a.href = '#state-' + st;
+            if (PRIMARY_STATES.has(st)) a.className = 'primary';
             a.innerHTML = (STATE_NAMES[st] || st) + ' <span class="num">' + stateCounts[st] + '</span>';
             idx.appendChild(a);
         });
@@ -347,25 +387,43 @@
             filtered.forEach(p => grid.appendChild(propCard(p)));
             results.appendChild(grid);
         } else {
-            // Group by state
-            sortedStates.forEach(st => {
-                const stProps = props.filter(p => p.state === st);
-                const group = document.createElement('div');
-                group.className = 'state-group fade-up';
-                group.id = 'state-' + st;
-                group.innerHTML = '<div class="state-head">' +
-                    '<h3>' + (STATE_NAMES[st] || st) + '</h3>' +
-                    '<span class="count">' + stProps.length + (stProps.length === 1 ? ' property' : ' properties') + '</span>' +
-                    '</div>';
-                const grid = document.createElement('div');
-                grid.className = 'props-grid';
-                stProps.forEach(p => grid.appendChild(propCard(p)));
-                group.appendChild(grid);
-                results.appendChild(group);
+            // Group by state — primary markets first, then "Additional Markets" header, then others
+            const primaryStatesActive = primaryOrder.filter(s => activeStates.has(s));
+            primaryStatesActive.forEach(st => {
+                results.appendChild(buildStateGroup(st, /*primary*/ true));
             });
-            // re-observe newly added fade-ups
+            if (otherStates.length) {
+                const div = document.createElement('div');
+                div.className = 'additional-markets-head fade-up';
+                div.innerHTML = '<span class="summit-eyebrow">Additional Markets</span>' +
+                    '<h3>Selective deployment across the country.</h3>' +
+                    '<p>Properties beyond our three primary markets — typically deployed alongside investor partners with local conviction or sector specialization.</p>';
+                results.appendChild(div);
+            }
+            otherStates.forEach(st => {
+                results.appendChild(buildStateGroup(st, /*primary*/ false));
+            });
             if (window.observeFadeUps) window.observeFadeUps();
         }
+    }
+
+    function buildStateGroup(st, isPrimary) {
+        const stProps = props.filter(p => p.state === st);
+        const group = document.createElement('div');
+        group.className = 'state-group fade-up' + (isPrimary ? ' primary' : '');
+        group.id = 'state-' + st;
+        const stateName = STATE_NAMES[st] || st;
+        const head = document.createElement('div');
+        head.className = 'state-head';
+        head.innerHTML =
+            '<h3>' + stateName + '</h3>' +
+            '<span class="count">' + stProps.length + (stProps.length === 1 ? ' property' : ' properties') + '</span>';
+        group.appendChild(head);
+        const grid = document.createElement('div');
+        grid.className = 'props-grid' + (isPrimary ? '' : ' compact');
+        stProps.forEach(p => grid.appendChild(propCard(p, isPrimary)));
+        group.appendChild(grid);
+        return group;
     }
 
     function heroForProperty(p) {
@@ -374,7 +432,7 @@
         return heroes[key] || null;
     }
 
-    function propCard(p) {
+    function propCard(p, isPrimary) {
         const heroSlug = heroForProperty(p);
         const detailSlugs = window.SUMMIT_DETAIL_PAGES || {};
         const key = p.addr + '|' + p.city + '|' + p.state;
@@ -382,23 +440,28 @@
         // If detail page exists, make the whole card a link
         const tag = detailSlug ? 'a' : 'div';
         const el = document.createElement(tag);
-        el.className = 'prop';
+        // Cards without a photo and without a detail page render as quiet
+        // address-only tiles. Cards with a photo OR a detail link render larger.
+        const hasPhoto = !!heroSlug;
+        el.className = 'prop' + (hasPhoto ? '' : ' no-photo');
         if (detailSlug) {
             el.href = 'property/' + detailSlug + '.html';
             el.style.textDecoration = 'none';
             el.style.color = 'inherit';
         }
-        const photoHtml = heroSlug
-            ? '<div class="photo">' +
-              '<img loading="lazy" src="assets/property-heroes/' + heroSlug + '.jpg" alt="' + escapeHtml(p.addr + ' in ' + p.city) + '">' +
+        let photoHtml = '';
+        if (hasPhoto) {
+            photoHtml = '<div class="photo">' +
+              '<img loading="lazy" src="assets/property-heroes/' + heroSlug + '.jpg" alt="' + escapeHtml(p.addr + ' in ' + p.city + ', ' + p.state) + '">' +
               (detailSlug ? '<span class="has-photo-badge">View Property</span>' : '') +
-              '</div>'
-            : '<div class="photo placeholder"></div>';
+              '</div>';
+        }
         el.innerHTML =
             photoHtml +
             '<div class="body">' +
               '<div class="addr">' + escapeHtml(p.addr) + '</div>' +
               '<div class="city">' + escapeHtml(p.city) + '<span class="st">' + p.state + '</span></div>' +
+              (detailSlug && !hasPhoto ? '<span class="card-cta">View Property &rarr;</span>' : '') +
             '</div>';
         return el;
     }
