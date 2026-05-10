@@ -75,7 +75,15 @@
                     <a href="mailto:CLeivas@TeamSummitRE.com">CLeivas@TeamSummitRE.com</a> · <a href="tel:+19492909150">(949) 290-9150</a></p>
                 </div>
             </div>
-            <form class="contact-form" action="mailto:info@teamsummitre.com" method="post" enctype="text/plain">
+            <!--
+                FORMSPREE SETUP (5 minutes):
+                1. Sign up at https://formspree.io (free tier: 50 submissions/month)
+                2. Create a form, copy your form ID (looks like "xayzyzyz")
+                3. Replace YOUR_FORMSPREE_ID below with the real ID
+                Until that's done, the form falls back to opening the user's email client.
+            -->
+            <form id="contactForm" class="contact-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+                <input type="hidden" name="_subject" value="New inquiry from teamsummitre.com">
                 <div>
                     <label for="firstName">First Name</label>
                     <input type="text" id="firstName" name="First Name" required>
@@ -86,7 +94,7 @@
                 </div>
                 <div class="full">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="Email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
                 <div>
                     <label for="phone">Phone</label>
@@ -124,6 +132,7 @@
                 </div>
                 <div class="full">
                     <button type="submit" class="summit-btn summit-btn-primary">Send Message</button>
+                    <div id="formStatus" style="margin-top: var(--summit-space-3); font-size: 14px;"></div>
                 </div>
             </form>
         </div>
@@ -146,6 +155,14 @@
                     <li><a href="properties.html">Portfolio</a></li>
                     <li><a href="team.html">Team</a></li>
                     <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Markets</h4>
+                <ul>
+                    <li><a href="wisconsin.html">Wisconsin</a></li>
+                    <li><a href="missouri.html">Missouri</a></li>
+                    <li><a href="properties.html">All 15 States</a></li>
                 </ul>
             </div>
             <div>
@@ -173,6 +190,100 @@
 </footer>
 
 <script src="assets/site.js"></script>
+<script>
+// Contact form submission — uses Formspree if configured, falls back to mailto
+(function() {
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('formStatus');
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+        const action = form.getAttribute('action');
+        // If Formspree placeholder is still in place, fall back to mailto
+        if (!action || action.includes('YOUR_FORMSPREE_ID')) {
+            e.preventDefault();
+            const data = new FormData(form);
+            const lines = [];
+            for (const [k, v] of data.entries()) {
+                if (v) lines.push(`${k}: ${v}`);
+            }
+            const subject = 'Inquiry from teamsummitre.com';
+            const body = encodeURIComponent(lines.join('\n\n'));
+            window.location.href = `mailto:info@teamsummitre.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+            status.style.color = 'var(--summit-graphite)';
+            status.textContent = 'Opening your email client...';
+            return;
+        }
+        // Real Formspree submission
+        e.preventDefault();
+        status.style.color = 'var(--summit-graphite)';
+        status.textContent = 'Sending...';
+        fetch(action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+        }).then(response => {
+            if (response.ok) {
+                form.reset();
+                status.style.color = 'var(--summit-success)';
+                status.innerHTML = '<strong>✓ Message sent.</strong> A Summit principal will respond personally.';
+            } else {
+                status.style.color = 'var(--summit-error)';
+                status.textContent = 'Something went wrong. Please email info@teamsummitre.com directly.';
+            }
+        }).catch(() => {
+            status.style.color = 'var(--summit-error)';
+            status.textContent = 'Network error. Please email info@teamsummitre.com directly.';
+        });
+    });
+})();
+</script>
+<script>
+// Pre-fill contact form when arriving from a property detail page
+// e.g. /contact.html?property=stag-industrial-stl&address=201-215+Stag+Industrial+Boulevard&city=St.+Louis&state=MO
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    const property = params.get('property');
+    const address = params.get('address');
+    const city = params.get('city');
+    const state = params.get('state');
+    if (!property && !address) return;
+
+    // Build a friendly pre-filled message
+    const propertyDisplay = address && city && state
+        ? `${address}, ${city}, ${state}`
+        : address || property;
+    const messageEl = document.getElementById('message');
+    const interestEl = document.getElementById('interest');
+    if (messageEl && !messageEl.value) {
+        messageEl.value = `I'd like to discuss ${propertyDisplay}.\n\n`;
+        messageEl.focus();
+        // Move caret to end
+        messageEl.setSelectionRange(messageEl.value.length, messageEl.value.length);
+    }
+    // Default the interest dropdown to "General Inquiry" if not selected
+    if (interestEl && !interestEl.value) {
+        interestEl.value = "General Inquiry";
+    }
+
+    // Add a visible breadcrumb above the form so the user knows we received the context
+    const form = document.querySelector('.contact-form');
+    if (form && propertyDisplay) {
+        const note = document.createElement('div');
+        note.className = 'full';
+        note.style.cssText = 'background: var(--summit-navy-50); border-left: 3px solid var(--summit-bronze); padding: 12px 16px; border-radius: var(--summit-radius-md); margin-bottom: var(--summit-space-3); font-family: var(--summit-font-body); font-size: 14px; color: var(--summit-graphite);';
+        note.innerHTML = `Inquiring about <strong style="color: var(--summit-navy);">${propertyDisplay}</strong>`;
+        form.insertBefore(note, form.firstChild);
+    }
+    // Add hidden input so the email body includes the property reference
+    if (form && property) {
+        const hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = 'Property';
+        hidden.value = propertyDisplay;
+        form.appendChild(hidden);
+    }
+})();
+</script>
 
 </body>
 </html>

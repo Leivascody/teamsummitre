@@ -200,6 +200,14 @@
                 </ul>
             </div>
             <div>
+                <h4>Markets</h4>
+                <ul>
+                    <li><a href="wisconsin.html">Wisconsin</a></li>
+                    <li><a href="missouri.html">Missouri</a></li>
+                    <li><a href="properties.html">All 15 States</a></li>
+                </ul>
+            </div>
+            <div>
                 <h4>Services</h4>
                 <ul>
                     <li><a href="services.html#acquisitions">Acquisition Advisory</a></li>
@@ -387,6 +395,16 @@
         stateFilter.value = '';
         render();
     });
+
+    // Pre-fill search/filter from URL params (e.g. ?state=WI or ?q=Stag)
+    const urlParams = new URLSearchParams(window.location.search);
+    const qParam = urlParams.get('q');
+    const stateParam = urlParams.get('state');
+    if (qParam && searchInput) searchInput.value = qParam;
+    if (stateParam && stateFilter) {
+        const opt = Array.from(stateFilter.options).find(o => o.value === stateParam.toUpperCase());
+        if (opt) stateFilter.value = stateParam.toUpperCase();
+    }
 
     render();
 })();

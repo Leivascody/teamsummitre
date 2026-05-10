@@ -279,7 +279,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
         <p>{addr} in {city}, {state_full} is one of {asset_count_phrase} commercial real estate assets Summit operates across {state_count} states. As a fully integrated operator and manager, we run this property with the rigor of an institutional team and the care of a long-term owner.</p>
         <p>Summit's role on this asset spans tenant relations, lease administration, vendor and maintenance management, capital improvements, and owner reporting. The property is part of a portfolio that prioritizes durable income, downside protection, and disciplined operations — the core-plus thesis Summit brings to every building it touches.</p>
         <div class="detail-cta-row">
-            <a href="../contact.html" class="summit-btn summit-btn-primary">Discuss This Property</a>
+            <a href="../contact.html?property={slug}&address={addr_url}&city={city_url}&state={state}" class="summit-btn summit-btn-primary">Discuss This Property</a>
             <a href="../properties.html" class="summit-btn summit-btn-secondary">Browse Full Portfolio</a>
         </div>
     </div>
@@ -416,6 +416,7 @@ def main():
             )
         photo_paths_json = json.dumps([f"../assets/property-galleries/{slug}/{f}" for f in gallery_photos])
 
+        import urllib.parse as _up
         # Render detail page
         page_html = PAGE_TEMPLATE.format(
             slug=slug,
@@ -429,6 +430,8 @@ def main():
             state_count="15",
             gallery_html="\n".join(gallery_html_parts),
             photo_paths_json=photo_paths_json,
+            addr_url=_up.quote(addr),
+            city_url=_up.quote(city),
         )
         detail_path = DETAIL_DEST / f"{slug}.html"
         with open(detail_path, "w") as f:

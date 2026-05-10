@@ -213,7 +213,7 @@ window.SUMMIT_HEROES = {
   "5530 E. Ponce de Leon Ave|Stone Mountain|GA": "5530-e-ponce-de-leon-ave-stone-mountain",
   "931 Main Street|Forest Park|GA": "931-main-forest-park",
   "1543 Gordon Hwy|Augusta|GA": "1543-gordon-hwy-augusta",
-  "356 Walnut Street|Macon|GA": "356-walnut-macon",
+  // 356 Walnut Street, Macon — no good exterior shot in source folder; fall back to navy placeholder
   "4100 14th Avenue|Columbus|GA": "4100-14th-columbus",
   "1231 Green Street SE|Conyers|GA": "1231-green-se-conyers",
   "3001 Hamburg Pike|Jeffersonville|IN": "3001-hamburg-jeffersonville",

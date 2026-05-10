@@ -51,7 +51,7 @@
     function animateCount(el) {
         const target = parseInt(el.dataset.count, 10);
         if (isNaN(target)) return;
-        const duration = 1100;
+        const duration = 1400;
         const start = performance.now();
         const startVal = 0;
         const suffix = (el.dataset.suffix || '').trim();
@@ -66,6 +66,13 @@
         requestAnimationFrame(tick);
     }
 
+    // Pre-set counter targets so they show the final value before they animate
+    // (prevents flash of wrong number if user scrolls quickly)
+    document.querySelectorAll('[data-count]').forEach(el => {
+        const target = parseInt(el.dataset.count, 10);
+        if (!isNaN(target)) el.textContent = target.toLocaleString();
+    });
+
     if ('IntersectionObserver' in window) {
         const counterObs = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -74,10 +81,8 @@
                     counterObs.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.4 });
+        }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
         document.querySelectorAll('[data-count]').forEach(el => counterObs.observe(el));
-    } else {
-        document.querySelectorAll('[data-count]').forEach(el => animateCount(el));
     }
 
     // ---- Mobile nav: close on link click ----
