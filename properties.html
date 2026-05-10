@@ -349,12 +349,23 @@
     }
 
     function propCard(p) {
-        const el = document.createElement('div');
-        el.className = 'prop';
         const heroSlug = heroForProperty(p);
+        const detailSlugs = window.SUMMIT_DETAIL_PAGES || {};
+        const key = p.addr + '|' + p.city + '|' + p.state;
+        const detailSlug = detailSlugs[key];
+        // If detail page exists, make the whole card a link
+        const tag = detailSlug ? 'a' : 'div';
+        const el = document.createElement(tag);
+        el.className = 'prop';
+        if (detailSlug) {
+            el.href = 'property/' + detailSlug + '.html';
+            el.style.textDecoration = 'none';
+            el.style.color = 'inherit';
+        }
         const photoHtml = heroSlug
             ? '<div class="photo">' +
               '<img loading="lazy" src="assets/property-heroes/' + heroSlug + '.jpg" alt="' + escapeHtml(p.addr + ' in ' + p.city) + '">' +
+              (detailSlug ? '<span class="has-photo-badge">View Property</span>' : '') +
               '</div>'
             : '<div class="photo placeholder"></div>';
         el.innerHTML =
